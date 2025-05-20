@@ -87,7 +87,7 @@ ChainWallet is a user-friendly, vendor-aware cryptocurrency wallet designed for 
 6. prepare the launcher for thunder and bitwindows
 
    ```bash
-   cd ./drivechain_launcher
+   cd "drivechain launcher"
    ```
 7. install dependancies
 
