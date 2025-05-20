@@ -84,6 +84,21 @@ ChainWallet is a user-friendly, vendor-aware cryptocurrency wallet designed for 
    ```bash
    python app.py
    ```
+6. prepare the launcher for thunder and bitwindows
+
+   ```bash
+   cd ./drivechain launcher
+   ```
+7. install dependancies
+
+   ```bash
+   npm install    `
+   ```
+8. Run launcher
+
+   ```bash
+   npm start    `
+   ```
 
 ---
 
