@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="my-4">Rune Etchings Explorer</h1>
+
+<form class="row g-3 mb-4">
+  <div class="col-auto">
+    <label>Min Divisibility:</label>
+    <input type="number" name="min_div" value="{{ filters.min_div }}" class="form-control">
+  </div>
+  <div class="col-auto">
+    <label>TxID:</label>
+    <input type="text" name="txid" value="{{ filters.txid or '' }}" class="form-control">
+  </div>
+  
+  <div class="col-auto">
+    <label>Symbol:</label>
+    <input type="text" name="symbol" value="{{ filters.symbol or '' }}" class="form-control">
+  </div>
+  <div class="col-auto align-self-end">
+    <button class="btn btn-primary">Filter</button>
+    <a href="?export=csv" class="btn btn-outline-success">Export CSV</a>
+  </div>
+</form>
+
+<div class="row mb-4">
+  <div class="col-md-6">
+    <h5>Top 5 Runes</h5>
+    <ul>
+      {% for name,count in top_runes %}
+        <li class="copyable" data-copy="{{name}}">{{ name }} — {{ count }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="col-md-6">
+    <h5>Top 5 Creators</h5>
+    <ul>
+      {% for txid,count in top_creators %}
+        <li class="copyable" data-copy="{{txid}}">
+          <code>{{ txid[:12] }}…</code>: {{ count }}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<canvas id="chart" height="100"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('chart');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: {{ blocks|map(attribute=0)|list }},
+      datasets: [{ label: 'Etchings/block', data: {{ blocks|map(attribute=1)|list }} }]
+    }
+  });
+</script>
+
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Symbol</th>
+      <th>Div</th>
+      <th>TxID</th>
+      <th>Block</th>
+      <th>Reputation</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for e in filtered %}
+    <tr>
+      <td class="copyable" data-copy="{{ loop.index + page.offset }}">
+        {{ loop.index + page.offset }}
+      </td>
+      <td class="copyable" data-copy="{{ e.name }}">{{ e.name }}</td>
+      <td class="copyable" data-copy="{{ e.symbol }}">{{ e.symbol }}</td>
+      <td class="copyable" data-copy="{{ e.divisibility }}">{{ e.divisibility }}</td>
+      <td>
+        <span class="copyable" data-copy="{{ e.location.tx_id }}">
+          <code>{{ e.location.tx_id[:10] }}…</code>
+        </span>
+      </td>
+      <td class="copyable" data-copy="{{ e.location.block_height }}">
+        {{ e.location.block_height }}
+      </td>
+      <td class="copyable" data-copy="{{ reputation[e.location.tx_id] }}">
+        {{ reputation[e.location.tx_id] }}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<nav>
+  {% if page.offset >= page.limit %}
+    <a href="?offset={{page.offset-page.limit}}&limit={{page.limit}}" class="btn btn-secondary">Prev</a>
+  {% endif %}
+  {% if page.offset + page.limit < page.total %}
+    <a href="?offset={{page.offset+page.limit}}&limit={{page.limit}}" class="btn btn-secondary">Next</a>
+  {% endif %}
+</nav>
+
+<script>
+// Attach copy-to-clipboard behavior
+document.querySelectorAll('.copyable').forEach(el => {
+  el.style.cursor = 'pointer';
+  el.addEventListener('click', () => {
+    const text = el.getAttribute('data-copy');
+    navigator.clipboard.writeText(text).then(() => {
+      // flash a Bootstrap "success" highlight
+      el.classList.add('table-success');
+      setTimeout(() => el.classList.remove('table-success'), 800);
+    });
+  });
+});
+</script>
+{% endblock %}

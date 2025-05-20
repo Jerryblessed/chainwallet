@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="card mx-auto" style="max-width: 400px;">
+    <div class="card-body">
+      <h5 class="card-title text-center">Load or Create Wallet</h5>
+      <form method="post">
+        <div class="mb-3">
+          <label for="password" class="form-label">Wallet Password</label>
+          <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <div class="d-flex justify-content-between">
+          <button type="submit" name="action" value="load" class="btn btn-success">Load Wallet</button>
+          <button type="submit" name="action" value="create" class="btn btn-primary">Create Wallet</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Chain Wallet + AI</title>
+</head>
+<body class="md:flex h-screen bg-gray-100">
+  <!-- Sidebar Toggle (mobile) -->
+  <div class="md:hidden fixed top-4 left-4 z-50">
+    <button id="sidebar-toggle" class="bg-blue-600 text-white p-2 rounded-md shadow-lg">☰</button>
+  </div>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed md:relative inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform bg-white w-64 shadow-lg z-40 pt-16 md:pt-0">
+    <div class="p-4 font-bold text-xl border-b sticky top-0 bg-white z-20 flex items-center">
+       <span class="ml-2">Chain Wallet</span>
+    </div>
+    <nav class="mt-2">
+      <ul class="space-y-1">
+        {% if not address %}
+        <li><button id="tab-create" onclick="showSection('create')" class="w-full text-left flex items-center px-4 py-2 hover:bg-gray-200"><span class="mr-2">🆕</span>Create EVM Account</button></li>
+        <li><button id="tab-login" onclick="showSection('login')" class="w-full text-left flex items-center px-4 py-2 hover:bg-gray-200"><span class="mr-2">🔑</span>Login / Forgot</button></li>
+        {% endif %}
+        <li><button id="tab-send" onclick="showSection('send')" class="w-full text-left flex items-center px-4 py-2 hover:bg-gray-200"><span class="mr-2">💸</span>Send xSat (EVM)</button></li>
+        <li><button onclick="window.location.href='https://faucet.exsat.network/'" class="w-full text-left flex items-center px-4 py-2 hover:bg-gray-200"><span class="mr-2">⛽</span>Fund EVM Wallet</button></li>
+        <li><button id="tab-lookup" onclick="showSection('lookup')" class="w-full text-left flex items-center px-4 py-2 hover:bg-gray-200"><span class="mr-2">🔍</span>EVM Tx Lookup (POT)</button></li>
+        <li><button onclick="window.location.href='/tracker'" class="w-full text-left flex items-center px-4 py-2 hover:bg-gray-200"><span class="mr-2">🔄</span>BTC + xSat (UTXO) Tx</button></li>
+        {% if address %}
+        <li><a href="{{ url_for('wallet_logout') }}" class="block flex items-center px-4 py-2 hover:bg-gray-200"><span class="mr-2">🚪</span>Logout</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <div id="main-content" class="flex-1 ml-0 md:ml-64 transition-all pt-16 md:pt-0">
+    <!-- Navbar -->
+    <header class="fixed top-0 left-0 w-full md:ml-64 bg-white shadow p-4 flex items-center space-x-8 z-30">
+      <h1 class="text-2xl font-bold">Chain Wallet</h1>
+      <div class="text-sm">
+        {% if address %}
+        <a href="https://scan-testnet.exsat.network/address/{{ address }}" target="_blank" class="underline">{{ address }}</a>
+        {% else %}
+        Not logged in
+        {% endif %}
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="p-6 mt-20 md:mt-8 md:pl-8 overflow-auto">
+      <!-- Create Account -->
+      <section id="section-create" class="space-y-4">
+        <h2 class="text-xl font-semibold">Create Account</h2>
+        <form method="POST" action="{{ url_for('wallet_register') }}" class="space-y-2">
+          <input name="password" type="password" placeholder="Passphrase (optional)" class="w-full p-2 border rounded" />
+          <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded">Generate</button>
+        </form>
+        {% if mnemonic %}
+        <div class="bg-green-50 p-4 rounded">
+          <p><strong>Mnemonic:</strong> <span class="font-mono">{{ mnemonic }}</span></p>
+          <p><strong>Private Key:</strong> <span class="font-mono">{{ priv }}</span></p>
+          <p><strong>Address:</strong> <span class="font-mono">{{ addr }}</span></p>
+        </div>
+        {% endif %}
+      </section>
+
+      <!-- Login -->
+      <section id="section-login" class="space-y-4 hidden">
+        <h2 class="text-xl font-semibold">Login / Forgot Password</h2>
+        <form method="POST" action="{{ url_for('wallet_login_priv') }}" class="space-y-2">
+          <input name="privkey" type="text" placeholder="Private Key" class="w-full p-2 border rounded" required />
+          <button class="px-4 py-2 bg-blue-500 text-white rounded">Login</button>
+        </form>
+        <form method="POST" action="{{ url_for('wallet_login_mnemonic') }}" class="space-y-2">
+          <input name="mnemonic" type="text" placeholder="Mnemonic Phrase" class="w-full p-2 border rounded" required />
+          <input name="passphrase" type="text" placeholder="Passphrase" class="w-full p-2 border rounded" />
+          <button class="px-4 py-2 bg-blue-500 text-white rounded">Login with Mnemonic</button>
+        </form>
+      </section>
+
+      <!-- Send Tokens -->
+      <section id="section-send" class="space-y-4 hidden md:ml-0">
+        <h2 class="text-xl font-semibold">Send Tokens</h2>
+        {% if address %}
+        <p><strong>Balance:</strong> {{ "%.8f"|format(balance) }} BTC</p>
+        <form method="POST" action="{{ url_for('wallet_send') }}" class="space-y-2 w-2/3">
+          <input type="hidden" name="private_key" value="{{ private_key }}" />
+          <input name="to_address" type="text" placeholder="Recipient (0x...)" class="w-full p-2 border rounded" required />
+          <input name="amount" type="number" step="any" placeholder="Amount" class="w-full p-2 border rounded" required />
+          <button class="px-4 py-2 bg-blue-600 text-white rounded">Send</button>
+        </form>
+        {% if tx_hash %}
+        <div class="bg-green-50 p-4 rounded mt-2 w-2/3">
+          <p>✅ TX sent: 
+            <a href="https://scan-testnet.exsat.network/tx/0x{{ tx_hash }}" target="_blank" class="underline break-all">0x{{ tx_hash }}</a>
+          </p>
+        </div>
+        {% endif %}
+        {% else %}
+        <p class="text-gray-600">Please log in first.</p>
+        {% endif %}
+      </section>
+
+      <!-- Tx Lookup -->
+      <section id="section-lookup" class="space-y-4 hidden md:ml-0">
+        <h2 class="text-xl font-semibold">Transaction Lookup</h2>
+        <form method="POST" action="{{ url_for('wallet_txlookup') }}" class="space-y-2 w-2/3">
+          <input name="txhash" type="text" placeholder="Tx Hash (0x...)" class="w-full p-2 border rounded font-mono" required />
+          <button class="px-4 py-2 bg-indigo-500 text-white rounded">Lookup</button>
+        </form>
+        {% if lookup_result %}
+        <pre class="bg-gray-50 p-4 border rounded font-mono text-sm overflow-auto h-64 w-2/3">{{ lookup_result }}</pre>
+        {% elif lookup_error %}
+        <p class="text-red-500">{{ lookup_error }}</p>
+        {% endif %}
+      </section>
+
+      <!-- AI Chat Toggle -->
+      <div id="ai-chat-toggle" class="fixed bottom-4 right-4 z-40">
+        <button onclick="toggleChat()" class="bg-blue-600 text-white p-3 rounded-full shadow-lg">💬</button>
+      </div>
+      <!-- AI Chat Panel -->
+      <div id="ai-chat" class="fixed bottom-20 right-4 w-80 bg-white shadow-lg rounded-lg hidden z-50">
+        <div class="bg-blue-600 text-white p-2 rounded-t-lg flex justify-between items-center">
+          <span>🤖 AI Assistant</span>
+          <button onclick="toggleChat()" class="text-white font-bold text-lg leading-none">×</button>
+        </div>
+        <div id="chat-messages" class="h-64 p-2 overflow-auto"></div>
+        <div class="flex p-2 border-t">
+          <input id="user-input" class="flex-1 p-2 border rounded" placeholder="Ask me..." />
+          <button id="send-ai" class="ml-2 px-3 py-1 bg-blue-600 text-white rounded">Send</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Sidebar toggle
+    document.getElementById('sidebar-toggle').onclick = () => {
+      document.getElementById('sidebar').classList.toggle('-translate-x-full');
+      document.getElementById('main-content').classList.toggle('ml-64');
+    };
+    // Section navigation
+    const sections = ['create','login','send','lookup'];
+    function showSection(sec) {
+      sections.forEach(s => document.getElementById('section-'+s).classList.add('hidden'));
+      document.getElementById('section-'+sec).classList.remove('hidden');
+      sections.forEach(s => document.getElementById('tab-'+s) && document.getElementById('tab-'+s).classList.remove('bg-gray-200'));
+      document.getElementById('tab-'+sec) && document.getElementById('tab-'+sec).classList.add('bg-gray-200');
+    }
+    showSection('{{ active_tab }}');
+    // AI chat toggle & messaging
+    function toggleChat() {
+      document.getElementById('ai-chat').classList.toggle('hidden');
+    }
+    document.getElementById('send-ai').onclick = async () => {
+      const input = document.getElementById('user-input').value;
+      const res = await fetch('/ai', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({msg: input})
+      });
+      const data = await res.json();
+      const div = document.getElementById('chat-messages');
+      div.innerHTML += `<div class='text-gray-800 p-1'><strong>You:</strong> ${input}</div>`;
+      div.innerHTML += `<div class='text-blue-600 p-1'><strong>AI:</strong> ${data.response}</div>`;
+      document.getElementById('user-input').value = '';
+      div.scrollTop = div.scrollHeight;
+    };
+  </script>
+</body>
+</html>

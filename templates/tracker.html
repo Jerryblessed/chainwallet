@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-info">🛰️ exSat Wallet Tracker</h1>
+<!-- <p class="lead">Balance: <strong>{{ total }} XSAT</strong></p>1 -->
+<table class="table table-hover table-dark">
+  <thead><tr><th>#</th><th>TXID</th><th>Index</th><th>Value</th><th>ScriptPubKey</th></tr></thead>
+  <tbody>
+  {% for u in utxos %}
+    <tr onclick="toggle({{loop.index}})">
+      <td>{{loop.index}}</td>
+      <td>{{u.txid[:16]}}...{{u.txid[-16:]}}</td>
+      <td>{{u.index}}</td>
+      <td>{{'%.8f'%u.value_xsat}}</td>
+      <td>{{u.scriptpubkey[:32]}}...</td>
+    </tr>
+    <tr id="json{{loop.index}}" style="display:none;"><td colspan="5"><pre>{{u|tojson(indent=2)}}</pre></td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+<script>function toggle(i){let r=document.getElementById('json'+i);r.style.display=r.style.display==='none'?'table-row':'none';}</script>
+{% endblock %}

@@ -1,0 +1,13 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #343a40;
+  cursor: pointer;
+}
+
+pre {
+  max-height: 60vh;
+  overflow: auto;
+}

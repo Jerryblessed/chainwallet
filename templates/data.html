@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- TradingView Widget BEGIN -->
+<div class="tradingview-widget-container mb-4">
+  <div class="tradingview-widget-container__widget"></div>
+  <div class="tradingview-widget-copyright">
+    <a href="https://www.tradingview.com" rel="noopener" target="_blank">
+      <span class="blue-text">Quotes</span>
+    </a> by TradingView
+  </div>
+  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-tickers.js" async>
+  {
+    "symbols": [
+      {"proName": "COINBASE:BTCUSD", "description": "BTC/USD"},
+      {"proName": "COINBASE:ETHUSD", "description": "ETH/USD"},
+      {"proName": "BINANCE:IOTAUSD", "description": "IOTA/USD"}
+    ],
+    "colorTheme": "dark",
+    "isTransparent": false,
+    "locale": "en"
+  }
+  </script>
+</div>
+<!-- TradingView Widget END -->
+
+<h1 class="text-info">📊 Rebar Data Insights</h1>
+{% if stats.error %}
+  <div class="alert alert-danger">Error: {{ stats.error }}</div>
+{% else %}
+  <pre class="bg-secondary text-light p-3 rounded">{{ stats | tojson(indent=2) }}</pre>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>🚀 Broadcast Raw TX via Shield</h1>
+<form method="post">
+  <div class="mb-3">
+    <label class="form-label">Signed TX Hex</label>
+    <textarea class="form-control bg-secondary text-white" name="raw_tx" rows="4" required></textarea>
+  </div>
+  <button class="btn btn-success">Send</button>
+</form>
+
+
+<div class="mt-4 d-flex gap-2">
+    <button onclick="window.location.href='bitcoin:'" style="padding: 10px 20px; font-size: 16px;">
+        Use Bitcore
+      </button>
+
+      
+  </div>
+
+{% if txid %}<div class="alert alert-success mt-3">✅ Broadcasted! TXID: {{txid}}</div>{% endif %}
+{% if error %}<div class="alert alert-danger mt-3">❌ Error: {{error}}</div>{% endif %}
+{% endblock %}
