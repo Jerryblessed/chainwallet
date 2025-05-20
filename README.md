@@ -22,10 +22,12 @@ ChainWallet is a user-friendly, vendor-aware cryptocurrency wallet designed for 
 
 ## 🏗️ Architecture & Tech Stack
 
-* **Backend:** Python, Flask, Requests
-* **Frontend:** React, Tailwind CSS, Bootstrap (fallback)
-* **Blockchain Layers:**
+* **chainwallet app:** Flask
+* **Drivechain redesign** React, Tailwind CSS, Bootstrap (fallback)
+* **Blockchain Layers and data:**
 
+  * Rebar  data
+  * Rebar Shield on Alkanes
   * Bitcoin Mainnet & Testnet (native UTXO)
   * ExSat EVM & Drivechain Thunder (account-based sidechain)
 * **APIs & Libraries:**
