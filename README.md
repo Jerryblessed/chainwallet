@@ -14,8 +14,6 @@
 
 # ChainWallet
 
-![ChainWallet Logo](https://example.com/chainwallet-logo.png)
-
 ChainWallet is a user-friendly, vendor-aware cryptocurrency wallet designed for seamless on-chain payments and Proof of Transaction (PoT) verification. Featuring AI-guided interactions, support for Bitcoin mainnet and testnet, Ethereum-compatible (EVM) wallet creation, UTXO tracking, Rune Etchings exploration, and integrated data insights via Rebar, ChainWallet empowers users and vendors alike with instant transaction proof and a frictionless experience.
 
 ---
