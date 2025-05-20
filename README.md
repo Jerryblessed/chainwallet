@@ -1,3 +1,18 @@
+---
+
+## 🔗 Try It!
+
+* Live Demo: [ChainWallet Demo](https://gibbon-clever-bream.ngrok-free.app)
+
+## 📊 Slides
+
+* Presentation Deck: [Google Slides](https://docs.google.com/presentation/d/1oDfGSVekTgnEeL-O77GgBry1EEvnXGnqVnOvsa8vmxs/edit?usp=sharing)
+
+## 📸 Landing Page
+
+![Landing Page](https://github.com/jerryblessed/chainwallet/blob/main/landingpage.png?raw=true)
+
+
 # ChainWallet
 
 ![ChainWallet Logo](https://example.com/chainwallet-logo.png)
@@ -22,17 +37,17 @@ ChainWallet is a user-friendly, vendor-aware cryptocurrency wallet designed for 
 
 ## 🏗️ Architecture & Tech Stack
 
-* **chainwallet app:** Flask
-* **Drivechain redesign** React, Tailwind CSS, Bootstrap (fallback)
-* **Blockchain Layers and data:**
+* **Backend:** Flask (Python)
+* **Frontend:** React, Tailwind CSS (with Bootstrap fallback)
+* **Blockchain Layers & Data:**
 
-  * Rebar  data
+  * Rebar Data
   * Rebar Shield on Alkanes
   * Bitcoin Mainnet & Testnet (native UTXO)
   * ExSat EVM & Drivechain Thunder (account-based sidechain)
 * **APIs & Libraries:**
 
-  * `bitcore-lib`, `bitcoinjs-lib` for TX construction
+  * `bitcore-lib`, `bitcoinjs-lib` for transaction construction
   * `get-port`, `electron` for dynamic port detection & desktop app
   * `TradingView` widget for live price tickers
   * `AzureOpenAI` for chat-based guidance
@@ -41,26 +56,23 @@ ChainWallet is a user-friendly, vendor-aware cryptocurrency wallet designed for 
 
 ## 🚧 Installation & Setup
 
-1. **Clone repository**
+1. Clone repository
 
    ```bash
    git clone https://github.com/jerryblessed/chainwallet.git
-   cd ChainWallet
+   cd chainwallet
    ```
-2. **Install Python dependencies**
+2. Install Python dependencies
 
    ```bash
    pip install -r requirements.txt
    ```
-3. **Use sample environment variables**
+3. Copy the sample environment file
 
+   ```bash
+   cp .env.sample .env
    ```
-   simply change .env.sample to .env and use for testing alone
-   ```
-   ### or
-
-4. **Set environment variables** in `.env`:
-  
+4. Update `.env` with your keys:
 
    ```dotenv
    FLASK_SECRET=your_flask_secret
@@ -70,7 +82,7 @@ ChainWallet is a user-friendly, vendor-aware cryptocurrency wallet designed for 
    AZURE_OPENAI_KEY=...
    AZURE_OPENAI_ENDPOINT=...
    ```
-5. **Start the wallet app**
+5. Start the wallet app
 
    ```bash
    python app.py
@@ -87,10 +99,15 @@ ChainWallet is a user-friendly, vendor-aware cryptocurrency wallet designed for 
 
 ---
 
+## ⭐️ Vendor Sample App
+
+The vendor sample app (`vendor_flask_app`) analyzes transaction values and returns PoT eligibility when the transaction meets the configured threshold.
+
+---
+
 ## 🧩 Configuration & Customization
 
-* **Threshold Settings:** Adjust PoT threshold in `config.py` (
-  `POT_THRESHOLD_ETH = 0.001`).
+* **Threshold Settings:** Adjust PoT threshold in `config.py` (`POT_THRESHOLD_ETH = 0.001`).
 * **Explorer URL:** Change block explorer links in `settings.js`.
 * **UI Themes:** Switch light/dark modes via ThemeContext.
 
