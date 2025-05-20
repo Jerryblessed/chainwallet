@@ -9,7 +9,7 @@
 
 ## 📸 Landing Page
 
-![Landing Page](https://github.com/jerryblessed/chainwallet/blob/main/landingpage.png?raw=true)
+[![Landing Page](https://github.com/jerryblessed/chainwallet/blob/main/landingpage.png?raw=true)](https://gibbon-clever-bream.ngrok-free.app/chainwallet)
 
 
 # ChainWallet
