@@ -7,3 +7,6 @@ openai
 python-dotenv
 requests
 flask
+
+web3
+mnemonic
