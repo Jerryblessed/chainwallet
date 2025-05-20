@@ -1,7 +1,7 @@
 
 ## 🔗 Try It!
 
-* Live Demo: [ChainWallet Demo](https://gibbon-clever-bream.ngrok-free.app)
+* Live Demo: [ChainWallet Demo](https://gibbon-clever-bream.ngrok-free.app/chainwallet)
 
 ## 📊 Slides
 
